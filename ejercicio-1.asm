@@ -11,7 +11,7 @@ N7 dq 123456
 N8 dq 123456
 F1 dd 1.234567
 T db 'resultado: %d',0
-formato db 'hola!',0xa
+formato db 'Todo cargado!',0xa
 LenFormato equ $ - formato
 LenT equ $ - T
 
@@ -32,7 +32,7 @@ imprimir:
     mov eax, 4
     mov ebx, 1
     mov ecx, formato
-    mov edx, len
+    mov edx, LenFormato
     int 0x80
     
     mov eax, 1
