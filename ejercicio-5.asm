@@ -1,8 +1,8 @@
 %include "io.inc"
 
 section .data
-    T db "Hola, mundo!", 0         ; cadena y un carácter nulo
-    buffer db "0", 0              ; buffer para la longitud (puede almacenar hasta 2 dígitos, ajustable)
+    T db "Hola, mundo!", 0        ; cadena y un carácter nulo
+    buffer db "0", 0              ; buffer para la longitud (puede almacenar hasta 2 dígitos)
 
 section .text
 global CMAIN
