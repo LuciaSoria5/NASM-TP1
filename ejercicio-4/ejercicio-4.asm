@@ -44,6 +44,7 @@ section .data
 
 section .text
 global CMAIN
+
 CMAIN:
     mov ebp, esp; for correct debugging
 
@@ -53,6 +54,12 @@ comparacion_n1_n2:
     mov bl, [N2]
     cmp al, bl
     jg n1_mayor
+    
+n1_mayor:
+    mov ecx, msg_n1_mayor
+    mov edx, len_msg_n1_mayor
+    call imprimir
+    jmp comparacion_n3_n4
 
 comparacion_n3_n4:
     ; b. Si N3 - N4 es cero
@@ -103,82 +110,67 @@ exit:
 
 ; Imprimir mensajes
 
-n1_mayor:
-    mov eax, 4         ; syscall: write
-    mov ebx, 1         ; file descriptor: stdout
-    mov ecx, msg_n1_mayor
-    mov edx, len_msg_n1_mayor        ; longitud del mensaje
-    int 0x80
-    jmp comparacion_n3_n4
+
 
 n3_igual:
-    mov eax, 4
-    mov ebx, 1
     mov ecx, msg_n3_igual
     mov edx, len_msg_n3_igual
-    int 0x80
+    call imprimir
     jmp comparacion_des_n5_n6
 
 n5_n6_overflow:
-    mov eax, 4
-    mov ebx, 1
     mov ecx, msg_n5_n6_overflow
     mov edx, len_msg_n5_n6_overflow
-    int 0x80
+    call imprimir
     jmp signo_n5
     
 n5_n6_no_overflow:
-    mov eax, 4
-    mov ebx, 1
     mov ecx, msg_n5_n6_no_overflow
     mov edx, len_msg_n5_n6_no_overflow
-    int 0x80
+    call imprimir
     jmp signo_n5
 
 n5_positivo:
-    mov eax, 4
-    mov ebx, 1
     mov ecx, msg_n5_signo_pos
     mov edx, len_msg_n5_signo_pos
-    int 0x80
+    call imprimir
     jmp comparacion_n7_n8
 
 n5_negativo:
-    mov eax, 4
-    mov ebx, 1
     mov ecx, msg_n5_signo_neg
     mov edx, len_msg_n5_signo_neg
-    int 0x80
+    call imprimir
     jmp comparacion_n7_n8
 
 n7_n8_carry:
-    mov eax, 4
-    mov ebx, 1
     mov ecx, msg_n7_n8_carry
     mov edx, len_msg_n7_n8_carry
-    int 0x80
+    call imprimir
     jmp comparacion_suma_n5_n6
     
 n7_n8_no_carry:
-    mov eax, 4
-    mov ebx, 1
     mov ecx, msg_n7_n8_no_carry
     mov edx, len_msg_n7_n8_no_carry
-    int 0x80
+    call imprimir
     jmp comparacion_suma_n5_n6
 
 paridad_par:
-    mov eax, 4
-    mov ebx, 1
     mov ecx, msg_paridad_par
     mov edx, len_msg_paridad_par
-    int 0x80
+    call imprimir
     jmp exit
     
 paridad_impar:
-    mov eax, 4
-    mov ebx, 1
     mov ecx, msg_paridad_impar
     mov edx, len_msg_paridad_impar
-    int 0x80
+    call imprimir
     jmp exit
+    
+; Parametros:
+; ECX = direccion del String
+; EDX = longitud del String
+imprimir:
+    mov eax, 4  ; numero de syscall
+    mov ebx, 1  ; stdout
+    int 0x80    ; llamada al sistema
+    ret
