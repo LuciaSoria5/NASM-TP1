@@ -16,7 +16,6 @@ global CMAIN
 CMAIN:
     mov ebp, esp; for correct debugging
 
-    ; f. Si el resultado de N5 + N6 tiene paridad par
     mov al, [N5]
     mov bl, [N6]
     add al, bl
