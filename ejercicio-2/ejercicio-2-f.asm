@@ -2,11 +2,11 @@
 
 section .data
     N7 dq 0x1111111122222222 ; enteros sin signo de 64 bits
-    N8 dq 0x4444444433333333
+    N8 dq 0x1111111122222222
 
     msg db 'El resultado de N7 + N8 (en hexadecimal) es: ', 10
     len_msg equ $ - msg
-    resultado dq 0x0000000000000000
+    resultado dq 0x0000000000000000000
 
 section .bss
     resultado_str resd 1
@@ -45,7 +45,7 @@ exit:
 convertir:
     mov ecx, 8
     xor edx, edx
-    loopConvertir:
+    loop_convertir:
         dec edi
         mov ebx, eax
         and ebx, 0xF
@@ -59,7 +59,7 @@ convertir:
     almacenar:
         mov [edi], bl
         shr eax, 4
-        loop loopConvertir
+        loop loop_convertir
         ret
     
 imprimir:
@@ -73,6 +73,6 @@ imprimir:
     mov eax, 4
     mov ebx, 1
     mov ecx, resultado_str
-    mov edx, 11
+    mov edx, 16
     int 0x80
     ret   

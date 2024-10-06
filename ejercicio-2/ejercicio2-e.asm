@@ -1,8 +1,8 @@
 %include "io.inc"
 
 section .data
-    N5 dd 10987654 ; enteros de 32 bits
-    N6 dd 10987654
+    N5 dd 100 ; enteros de 32 bits
+    N6 dd 200
 
     msg db 'El resultado de N5 + N6 es: ', 10
     len_msg equ $ - msg
@@ -38,15 +38,15 @@ exit:
 convertir:   
     mov ecx, 10
     xor edx, edx
-    loopConvertir:
-        xor edx, edx    ; limpiar el contador
-        div ecx         ; eax/10
-        add dl, '0'     ; convertir a ascii
-        mov [edi], dl   ; guardar el digito
-        dec edi         ; mover el puntero hacia atras
-        inc edx         ; aumentar contador de digitos
-        test eax, eax   ; si el cociente no es 0 repito
-        jnz loopConvertir
+    loop_convertir:
+        xor edx, edx    
+        div ecx         
+        add dl, '0'    
+        mov [edi], dl  
+        dec edi         
+        inc edx         
+        test eax, eax   
+        jnz loop_convertir
     ret
     
 imprimir:

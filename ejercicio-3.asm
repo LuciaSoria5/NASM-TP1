@@ -62,7 +62,7 @@ exit:
 convertir:
     mov ecx, 8
     xor edx, edx
-    loopConvertir:
+    loop_convertir:
         dec edi
         mov ebx, eax
         and ebx, 0xF
@@ -76,7 +76,7 @@ convertir:
     almacenar:
         mov [edi], bl
         shr eax, 4
-        loop loopConvertir
+        loop loop_convertir
         ret
 
 imprimir_mensaje:

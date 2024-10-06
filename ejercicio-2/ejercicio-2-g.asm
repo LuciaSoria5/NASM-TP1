@@ -1,20 +1,20 @@
 %include "io.inc"
 
 section .data
-    N3 dw -100   ; 16 bits con signo
-    N4 dw 3
+    N5 dd 1000000021 ; enteros de 32 bits
+    N6 dd 2
     
-    msg db 'El resultado de N3/N4 es:', 10
+    msg db 'El resultado de N5/N6 es:', 10
     len_msg equ $ - msg
     msg_resto db 10,'El resto es:', 10
     len_msg_resto equ $ - msg_resto
     
-    resultado_str db '00000'
-    resto_str db '00000'
+    resultado_str db '0000000000'
+    resto_str db '0000000000'
 
 section .bss
-    resultado resw 1
-    resto resw 1
+    resultado resd 1
+    resto resd 1
 
 section .text
 global CMAIN
@@ -22,25 +22,25 @@ CMAIN:
     mov ebp, esp
     
     ; Realizo la division
-    mov ax, [N3]
-    cwd     ;extender el signo de AX a DX
-    mov bx, [N4]    
-    ;xor dx, dx
-    idiv bx         ; para división con signo
-    mov [resultado], ax
-    mov [resto], dx
+    mov eax, [N5]
+    mov ebx, [N6]    
+    cdq     ; extender el signo de EAX a EDX
+    ;xor edx, edx
+    idiv ebx    ; para division con signo
+    mov [resultado], eax
+    mov [resto], edx
     
     call ver_cociente
     call ver_resto
-    
+
 exit:
     mov eax, 1
     xor ebx, ebx
-    int 0x80    
+    int 0x80
     
 ver_cociente:    ; Convierto el resultado a string:
-    movsx eax, word[resultado]
-    mov edi, resultado_str + 4 
+    mov eax, [resultado]
+    mov edi, resultado_str + 9
     test eax, eax 
     js negativo
     call convertir
@@ -52,35 +52,35 @@ negativo:
     mov byte[resultado_str], '-' ; añado el simbolo negativo    
     call convertir
     call imprimir_resultado
-    ret    
+    ret
     
 ver_resto:    ; Convierto el resto a string:
-    movsx eax, word[resto]
-    mov edi, resto_str + 4
+    mov eax, [resto]
+    mov edi, resto_str + 9
     test eax, eax 
     js negativo_resto
     call convertir
     call imprimir_resto
     ret
-   
+    
 negativo_resto:
     neg eax
     mov byte[resto_str], '-' ; añado el simbolo negativo    
     call convertir
     call imprimir_resto
-    ret      
+    ret       
     
 convertir:   
     mov ecx, 10
     xor edx, edx
     loop_convertir:
-        xor edx, edx   
+        xor edx, edx    
         div ecx         
         add dl, '0'     
-        mov [edi], dl   
+        mov [edi], dl  
         dec edi         
-        inc edx         
-        test eax, eax   
+        inc edx        
+        test eax, eax  
         jnz loop_convertir
     ret
     
@@ -95,7 +95,7 @@ imprimir_resultado:
     mov eax, 4
     mov ebx, 1
     mov ecx, resultado_str
-    mov edx, 5
+    mov edx, 10
     int 0x80
     ret
 
@@ -110,6 +110,6 @@ imprimir_resto:
     mov eax, 4
     mov ebx, 1
     mov ecx, resto_str
-    mov edx, 5
+    mov edx, 10
     int 0x80
-    ret   
+    ret  

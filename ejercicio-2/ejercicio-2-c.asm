@@ -1,8 +1,8 @@
 %include "io.inc"
 
 section .data
-    N1 db 12    ; 8 bits sin signo
-    N2 db 21
+    N1 db 2    ; 8 bits sin signo
+    N2 db 100
     
     msg db 'El resultado de N1 * N2 es: ', 10
     len_msg equ $ - msg
@@ -13,6 +13,7 @@ section .bss
 
 section .text
     global CMAIN
+    
 CMAIN:
     mov ebp, esp
 
@@ -38,15 +39,15 @@ exit:
 convertir:   
     mov ecx, 10
     xor edx, edx
-    loopConvertir:
-        xor edx, edx    ; limpiar el contador
-        div ecx         ; eax/10
-        add dl, '0'     ; convertir a ascii
-        mov [edi], dl   ; guardar el digito
-        dec edi         ; mover el puntero hacia atras
-        inc edx         ; aumentar contador de digitos
-        test eax, eax   ; si el cociente no es 0 repito
-        jnz loopConvertir
+    loop_convertir:
+        xor edx, edx
+        div ecx         
+        add dl, '0'     
+        mov [edi], dl   
+        dec edi         
+        inc edx         
+        test eax, eax   
+        jnz loop_convertir
     ret
     
 imprimir:
