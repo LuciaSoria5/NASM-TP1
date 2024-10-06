@@ -1,20 +1,18 @@
 %include "io.inc"
 
 section .data
-    N1 db 128    ; 8 bits sin signo
-    N2 db 127
-    
-    msg db 'El resultado de N1 + N2 es ', 0
+    N1 db 12    ; 8 bits sin signo
+    N2 db 12
+
+    msg db 'El resultado de N1 + N2 es: ', 10
     len_msg equ $ - msg
-    resultado_str db '00', 0
+    resultado_str db '000', 0
 
 section .bss
-    ; NOTA: como el resultado se almacena en 1 byte, el mismo debe ser menor a 256
     resultado resb 1
 
 section .text
     global CMAIN
-    ;extern convertir
 CMAIN:
     mov ebp, esp
 
@@ -26,7 +24,7 @@ CMAIN:
     
     ; Convierto el resultado a string:
     movzx eax, byte[resultado]
-    mov edi, resultado_str
+    mov edi, resultado_str + 2
     call convertir
     
     ; Imprimo el resultado
@@ -62,6 +60,6 @@ imprimir:
     mov eax, 4
     mov ebx, 1
     mov ecx, resultado_str
-    mov edx, 1
+    mov edx, 3
     int 0x80
     ret    

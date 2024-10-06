@@ -1,47 +1,39 @@
 %include "io.inc"
 
 section .data
-    N3 dw 32767   ; 16 bits con signo
-    N4 dw 100
+    N1 db 12    ; 8 bits sin signo
+    N2 db 21
     
-    msg db 'El resultado de N3 - N4 es:', 10
+    msg db 'El resultado de N1 * N2 es: ', 10
     len_msg equ $ - msg
-    resultado_str db '00000', 0
+    resultado_str db '000', 0
 
 section .bss
-    resultado resw 1
+    resultado resb 1
 
 section .text
-global CMAIN
+    global CMAIN
 CMAIN:
     mov ebp, esp
-    
-    ; Realizo la resta
-    mov ax, [N3]
-    mov bx, [N4]    
-    sub ax, bx
+
+    ; Realizo la multiplicacion
+    mov al, [N1]
+    mov bl, [N2]
+    mul bl
     mov [resultado], ax
     
     ; Convierto el resultado a string:
-    movsx eax, word[resultado]
-    mov edi, resultado_str + 5 
-                
-    test eax, eax 
-    js negativo
-
+    movzx eax, byte[resultado]
+    mov edi, resultado_str + 2
     call convertir
+    
+    ; Imprimo el resultado
     call imprimir 
     
 exit:
     mov eax, 1
     xor ebx, ebx
     int 0x80
-    
-negativo:
-    neg eax
-    mov byte[resultado_str], '-' ; añado el simbolo negativo    
-    call convertir
-    call imprimir
     
 convertir:   
     mov ecx, 10
@@ -68,6 +60,6 @@ imprimir:
     mov eax, 4
     mov ebx, 1
     mov ecx, resultado_str
-    mov edx, 6
+    mov edx, 3
     int 0x80
-    jmp exit    
+    ret    

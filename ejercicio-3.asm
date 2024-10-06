@@ -3,6 +3,9 @@
 section .data
     num1 dq 0x1111111122222222, 0x3333333344444444
     num2 dq 0x1111111122222222, 0x3333333344444444
+    
+    msg db 'El resultado de sumar ambos numeros (en hexadecimal) es: ', 10
+    len_msg equ $ - msg
     resultado dq 0x0000000000000000, 0x0000000000000000
     
 section .bss
@@ -11,8 +14,9 @@ section .bss
 section .text
 global CMAIN
 CMAIN:
-    mov ebp, esp; for correct debugging
-    ; Muevo los valores a registros de 8 bits
+    mov ebp, esp
+     
+    ; Muevo los valores a registros de propósito general
     mov eax, dword[num1]
     mov ebx, dword[num1 + 4]
     mov ecx, dword[num1 + 8]
@@ -28,7 +32,10 @@ CMAIN:
     mov dword[resultado], eax
     mov dword[resultado + 4], ebx
     mov dword[resultado + 8], ecx
-    mov dword[resultado + 12], edx
+    mov dword[resultado + 12], edx  
+    
+    ; imprimir mensaje
+    call imprimir_mensaje
     
     ; Imprimir resultado
     mov eax, [resultado]
@@ -72,10 +79,20 @@ convertir:
         loop loopConvertir
         ret
 
-imprimir:
+imprimir_mensaje:
+    ; imprimir mensaje:
     mov eax, 4
     mov ebx, 1
-    mov ecx, edi
+    mov ecx, msg
+    mov edx, len_msg 
+    int 0x80
+    ret
+
+imprimir:
+    ; imprimir resultado
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, resultado_str
     mov edx, 16
     int 0x80
     ret

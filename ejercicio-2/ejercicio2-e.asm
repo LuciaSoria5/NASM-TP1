@@ -1,47 +1,39 @@
 %include "io.inc"
 
 section .data
-    N3 dw 32767   ; 16 bits con signo
-    N4 dw 100
-    
-    msg db 'El resultado de N3 - N4 es:', 10
+    N5 dd 10987654 ; enteros de 32 bits
+    N6 dd 10987654
+
+    msg db 'El resultado de N5 + N6 es: ', 10
     len_msg equ $ - msg
-    resultado_str db '00000', 0
+    resultado_str db '0000000000', 0
 
 section .bss
-    resultado resw 1
+    resultado resd 1
 
 section .text
-global CMAIN
+    global CMAIN
 CMAIN:
     mov ebp, esp
-    
-    ; Realizo la resta
-    mov ax, [N3]
-    mov bx, [N4]    
-    sub ax, bx
-    mov [resultado], ax
+
+    ; Realizo la suma
+    mov eax, [N5]
+    mov ebx, [N6]    
+    add eax, ebx
+    mov [resultado], eax
     
     ; Convierto el resultado a string:
-    movsx eax, word[resultado]
-    mov edi, resultado_str + 5 
-                
-    test eax, eax 
-    js negativo
-
+    mov eax, [resultado]
+    mov edi, resultado_str + 10
     call convertir
+    
+    ; Imprimo el resultado
     call imprimir 
     
 exit:
     mov eax, 1
     xor ebx, ebx
     int 0x80
-    
-negativo:
-    neg eax
-    mov byte[resultado_str], '-' ; añado el simbolo negativo    
-    call convertir
-    call imprimir
     
 convertir:   
     mov ecx, 10
@@ -68,6 +60,6 @@ imprimir:
     mov eax, 4
     mov ebx, 1
     mov ecx, resultado_str
-    mov edx, 6
+    mov edx, 11
     int 0x80
-    jmp exit    
+    ret    

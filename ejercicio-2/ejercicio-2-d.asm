@@ -1,47 +1,58 @@
 %include "io.inc"
 
 section .data
-    N3 dw 32767   ; 16 bits con signo
-    N4 dw 100
+    N3 dw 6   ; 16 bits con signo
+    N4 dw 3
     
-    msg db 'El resultado de N3 - N4 es:', 10
+    msg db 'El resultado de N3/N4 es:', 10
     len_msg equ $ - msg
-    resultado_str db '00000', 0
+    msg_resto db 10,'El resto es:', 10
+    len_msg_resto equ $ - msg_resto
+    
+    resultado_str db '00000'
+    resto_str db '00000'
 
 section .bss
     resultado resw 1
+    resto resw 1
 
 section .text
 global CMAIN
 CMAIN:
     mov ebp, esp
     
-    ; Realizo la resta
+    ; Realizo la division
     mov ax, [N3]
     mov bx, [N4]    
-    sub ax, bx
+    xor dx, dx
+    div bx
     mov [resultado], ax
+    mov [resto], dx
     
-    ; Convierto el resultado a string:
+ver_cociente:    ; Convierto el resultado a string:
     movsx eax, word[resultado]
-    mov edi, resultado_str + 5 
-                
+    mov edi, resultado_str + 4 
     test eax, eax 
     js negativo
-
     call convertir
-    call imprimir 
-    
-exit:
-    mov eax, 1
-    xor ebx, ebx
-    int 0x80
+    call imprimir
     
 negativo:
     neg eax
     mov byte[resultado_str], '-' ; añado el simbolo negativo    
     call convertir
-    call imprimir
+    call imprimir    
+    
+ver_resto:    ; Convierto el resto a string:
+    movsx eax, word[resto]
+    mov edi, resto_str + 4
+    call convertir
+    call imprimir_resto
+    
+exit:
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
     
 convertir:   
     mov ecx, 10
@@ -68,6 +79,21 @@ imprimir:
     mov eax, 4
     mov ebx, 1
     mov ecx, resultado_str
-    mov edx, 6
+    mov edx, 5
+    int 0x80
+    jmp ver_resto
+
+imprimir_resto:    
+    ; imprimir mensaje del resto:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg_resto
+    mov edx, len_msg_resto 
+    int 0x80
+    ; imprimir resto
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, resto_str
+    mov edx, 5
     int 0x80
     jmp exit    
